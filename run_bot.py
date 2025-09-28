@@ -23,7 +23,7 @@ client = tweepy.Client(
 
 # --- Countdown Configuration ---
 release_date = datetime.date(2026, 1, 9)
-countdown_start_date = datetime.date(2025, 9, 29) # Correctly updated to start tomorrow
+countdown_start_date = datetime.date(2025, 9, 29)
 today = datetime.date.today()
 
 # --- Main Script Logic ---
@@ -33,50 +33,25 @@ if today < countdown_start_date:
 
 days_left = (release_date - today).days
 
-# --- Dynamic Folder Selection ---
-if days_left > 75:
-    media_folder = "media/phase1_buildup"
-elif 30 <= days_left <= 75:
-    media_folder = "media/phase2_themed"
-elif 1 < days_left < 30:
-    media_folder = "media/phase3_final"
-else:
-    media_folder = "media/phase4_release"
-
-print(f"Today is {today}. Days left: {days_left}. Using folder: {media_folder}")
-
-
-# --- NEW: Updated Tweet Composition Logic ---
-# Note: Based on the current dates, Sept 29th will have 102 days left.
+# --- Tweet Composition Logic ---
 if days_left == 102: # Specifically for Sept 29th (Trailer Release Day)
-    tweet_text = f"THE COUNTDOWN BEGINS! 🔥 Only {days_left} days until #Rajasaab! The official trailer drops this evening! ⏳\n\n#Prabhas #RajasaabCountdown"
+    tweet_text = f"THE COUNTDOWN BEGINS! 🔥 {days_left} ! The official trailer drops this evening! "
 elif days_left == 101: # Specifically for Sept 30th (Day after trailer)
-    tweet_text = f"Did you see the trailer?! 💥 {days_left} days to go for #Rajasaab!\n\n#Prabhas #RajasaabTrailer"
+    tweet_text = f"Did you see the trailer?! 💥 {days_left} "
 elif days_left > 1: # General countdown for all other days
-    tweet_text = f"{days_left} DAYS TO GO for #Rajasaab! 🔥\n\nThe countdown is ON! ⏳\n\n#Prabhas #RajasaabCountdown"
+    tweet_text = f"{days_left} "
 elif days_left == 1:
-    tweet_text = "JUST 1 DAY TO GO! Get ready for the Rebel Star's arrival! #Rajasaab 💥\n\n#Prabhas"
+    tweet_text = "JUST 1 DAY TO GO! Get ready for the Rebel Star's arrival! "
 elif days_left == 0:
-    tweet_text = "THE DAY IS HERE! #RAJASAAB has been unleashed! 👑\n\nEnjoy the movie! #Prabhas"
+    tweet_text = "THE DAY IS HERE! #RAJASAAB has been unleashed! "
 else:
     tweet_text = f"Celebrating {-days_left} day(s) since #Rajasaab's release! What are your reviews? #Prabhas"
 
 
-# --- Post the Tweet ---
+# --- Post the Tweet (Text Only) ---
 try:
-    media_files = [f for f in os.listdir(media_folder) if os.path.isfile(os.path.join(media_folder, f))]
-
-    if not media_files:
-        print(f"No media found in {media_folder}. Posting tweet without media.")
-        response = client.create_tweet(text=tweet_text)
-    else:
-        random_image_path = os.path.join(media_folder, random.choice(media_files))
-        print(f"Uploading media: {random_image_path}")
-        
-        media = api_v1.media_upload(filename=random_image_path)
-        response = client.create_tweet(text=tweet_text, media_ids=[media.media_id])
-
+    print("Posting a text-only tweet...")
+    response = client.create_tweet(text=tweet_text)
     print(f"Tweet sent successfully! Tweet ID: {response.data['id']}")
-
 except Exception as e:
     print(f"An error occurred: {e}")
