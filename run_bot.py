@@ -9,7 +9,7 @@ try:
     ACCESS_TOKEN = os.environ["TWITTER_ACCESS_TOKEN"]
     ACCESS_TOKEN_SECRET = os.environ["TWITTER_ACCESS_TOKEN_SECRET"]
 except KeyError:
-    print("Keys are incorrect:")
+    print("Error: Twitter API credentials not found in environment variables.")
     exit()
 
 auth = tweepy.OAuth1UserHandler(API_KEY, API_SECRET_KEY, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
@@ -21,16 +21,19 @@ client = tweepy.Client(
     access_token_secret=ACCESS_TOKEN_SECRET
 )
 
+# --- Countdown Configuration ---
 release_date = datetime.date(2026, 1, 9)
-countdown_start_date = datetime.date(2025, 10, 1)
+countdown_start_date = datetime.date(2025, 9, 29) # Correctly updated to start tomorrow
 today = datetime.date.today()
 
-# if today < countdown_start_date:
-#     print(f"Countdown has not started. It begins on {countdown_start_date}.")
-#     exit()
+# --- Main Script Logic ---
+if today < countdown_start_date:
+    print(f"Countdown has not started. It begins on {countdown_start_date}.")
+    exit()
 
 days_left = (release_date - today).days
 
+# --- Dynamic Folder Selection ---
 if days_left > 75:
     media_folder = "media/phase1_buildup"
 elif 30 <= days_left <= 75:
@@ -42,7 +45,14 @@ else:
 
 print(f"Today is {today}. Days left: {days_left}. Using folder: {media_folder}")
 
-if days_left > 1:
+
+# --- NEW: Updated Tweet Composition Logic ---
+# Note: Based on the current dates, Sept 29th will have 102 days left.
+if days_left == 102: # Specifically for Sept 29th (Trailer Release Day)
+    tweet_text = f"THE COUNTDOWN BEGINS! 🔥 Only {days_left} days until #Rajasaab! The official trailer drops this evening! ⏳\n\n#Prabhas #RajasaabCountdown"
+elif days_left == 101: # Specifically for Sept 30th (Day after trailer)
+    tweet_text = f"Did you see the trailer?! 💥 {days_left} days to go for #Rajasaab!\n\n#Prabhas #RajasaabTrailer"
+elif days_left > 1: # General countdown for all other days
     tweet_text = f"{days_left} DAYS TO GO for #Rajasaab! 🔥\n\nThe countdown is ON! ⏳\n\n#Prabhas #RajasaabCountdown"
 elif days_left == 1:
     tweet_text = "JUST 1 DAY TO GO! Get ready for the Rebel Star's arrival! #Rajasaab 💥\n\n#Prabhas"
@@ -51,19 +61,18 @@ elif days_left == 0:
 else:
     tweet_text = f"Celebrating {-days_left} day(s) since #Rajasaab's release! What are your reviews? #Prabhas"
 
+
+# --- Post the Tweet ---
 try:
-    # Get a list of all files in the chosen folder
     media_files = [f for f in os.listdir(media_folder) if os.path.isfile(os.path.join(media_folder, f))]
 
     if not media_files:
         print(f"No media found in {media_folder}. Posting tweet without media.")
         response = client.create_tweet(text=tweet_text)
     else:
-        # Pick a random image from the folder
         random_image_path = os.path.join(media_folder, random.choice(media_files))
         print(f"Uploading media: {random_image_path}")
         
-        # Upload the media and post the tweet
         media = api_v1.media_upload(filename=random_image_path)
         response = client.create_tweet(text=tweet_text, media_ids=[media.media_id])
 
