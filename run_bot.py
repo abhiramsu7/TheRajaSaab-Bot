@@ -35,15 +35,15 @@ days_left = (release_date - today).days
 
 # --- Tweet Composition Logic ---
 if days_left == 102: # Specifically for Sept 29th (Trailer Release Day)
-    tweet_text = f"THE COUNTDOWN BEGINS! 🔥 {days_left} ! The official trailer drops this evening! "
+    tweet_text = f"{days_left}"
 elif days_left == 101: # Specifically for Sept 30th (Day after trailer)
-    tweet_text = f"Did you see the trailer?! 💥 {days_left} "
+    tweet_text = f"{days_left} "
 elif days_left > 1: # General countdown for all other days
     tweet_text = f"{days_left} "
 elif days_left == 1:
-    tweet_text = "JUST 1 DAY TO GO! Get ready for the Rebel Star's arrival! "
+    tweet_text = "h"
 elif days_left == 0:
-    tweet_text = "THE DAY IS HERE! #RAJASAAB has been unleashed! "
+    tweet_text = "k"
 else:
     tweet_text = f"Celebrating {-days_left} day(s) since #Rajasaab's release! What are your reviews? #Prabhas"
 
