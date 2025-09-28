@@ -1,9 +1,12 @@
+# File: ssmb29_bot.py
+
 import tweepy
 import datetime
 import os
 import random
 
 try:
+    # IMPORTANT: These will be the keys for your NEW SSMB29 bot account
     API_KEY = os.environ["TWITTER_API_KEY"]
     API_SECRET_KEY = os.environ["TWITTER_API_SECRET_KEY"]
     ACCESS_TOKEN = os.environ["TWITTER_ACCESS_TOKEN"]
@@ -12,6 +15,7 @@ except KeyError:
     print("Error: Twitter API credentials not found in environment variables.")
     exit()
 
+# --- Twitter Authentication ---
 auth = tweepy.OAuth1UserHandler(API_KEY, API_SECRET_KEY, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api_v1 = tweepy.API(auth)
 client = tweepy.Client(
@@ -22,57 +26,32 @@ client = tweepy.Client(
 )
 
 # --- Countdown Configuration ---
-release_date = datetime.date(2026, 1, 9)
-countdown_start_date = datetime.date(2025, 9, 29) # Correctly updated to start tomorrow
+update_date = datetime.date(2025, 11, 1)
 today = datetime.date.today()
+days_to_update = (update_date - today).days
 
-# --- Main Script Logic ---
-if today < countdown_start_date:
-    print(f"Countdown has not started. It begins on {countdown_start_date}.")
-    exit()
-
-days_left = (release_date - today).days
-
-# --- Dynamic Folder Selection ---
-if days_left > 75:
-    media_folder = "media/phase1_buildup"
-elif 30 <= days_left <= 75:
-    media_folder = "media/phase2_themed"
-elif 1 < days_left < 30:
-    media_folder = "media/phase3_final"
+# --- Tweet Composition Logic ---
+if days_to_update > 1:
+    tweet_text = f"🔥 {days_to_update} days until the big #SSMB29 update!\n\n#MaheshBabu #SSRajamouli"
+elif days_to_update == 1:
+    tweet_text = "The #SSMB29 update is TOMORROW! Get ready! 💥\n\n#MaheshBabu #SSRajamouli"
+elif days_to_update == 0:
+    # This is the special tweet for November 1st
+    tweet_text = "GLOBETROTTER MONTH HAS ARRIVED\n\n#SSMB29"
 else:
-    media_folder = "media/phase4_release"
-
-print(f"Today is {today}. Days left: {days_left}. Using folder: {media_folder}")
-
-
-# --- NEW: Updated Tweet Composition Logic ---
-# Note: Based on the current dates, Sept 29th will have 102 days left.
-if days_left == 102: # Specifically for Sept 29th (Trailer Release Day)
-    tweet_text = f"THE COUNTDOWN BEGINS! 🔥 Only {days_left} days until #Rajasaab! The official trailer drops this evening! ⏳\n\n#Prabhas #RajasaabCountdown"
-elif days_left == 101: # Specifically for Sept 30th (Day after trailer)
-    tweet_text = f"Did you see the trailer?! 💥 {days_left} days to go for #Rajasaab!\n\n#Prabhas #RajasaabTrailer"
-elif days_left > 1: # General countdown for all other days
-    tweet_text = f"{days_left} DAYS TO GO for #Rajasaab! 🔥\n\nThe countdown is ON! ⏳\n\n#Prabhas #RajasaabCountdown"
-elif days_left == 1:
-    tweet_text = "JUST 1 DAY TO GO! Get ready for the Rebel Star's arrival! #Rajasaab 💥\n\n#Prabhas"
-elif days_left == 0:
-    tweet_text = "THE DAY IS HERE! #RAJASAAB has been unleashed! 👑\n\nEnjoy the movie! #Prabhas"
-else:
-    tweet_text = f"Celebrating {-days_left} day(s) since #Rajasaab's release! What are your reviews? #Prabhas"
-
+    # This is the message that will post every day AFTER Nov 1st
+    tweet_text = "Stay tuned for the latest on #SSMB29 following the recent update! News could drop anytime.\n\n#MaheshBabu #SSRajamouli"
 
 # --- Post the Tweet ---
 try:
+    # This part remains the same. You can add media to a folder in this new project.
+    media_folder = "media/" # Make sure this folder exists in your SSMB29_Bot project
     media_files = [f for f in os.listdir(media_folder) if os.path.isfile(os.path.join(media_folder, f))]
 
     if not media_files:
-        print(f"No media found in {media_folder}. Posting tweet without media.")
         response = client.create_tweet(text=tweet_text)
     else:
         random_image_path = os.path.join(media_folder, random.choice(media_files))
-        print(f"Uploading media: {random_image_path}")
-        
         media = api_v1.media_upload(filename=random_image_path)
         response = client.create_tweet(text=tweet_text, media_ids=[media.media_id])
 
