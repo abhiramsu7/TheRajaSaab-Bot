@@ -2,6 +2,7 @@ import tweepy
 import datetime
 import os
 import random
+from zoneinfo import ZoneInfo
 
 try:
     API_KEY = os.environ["TWITTER_API_KEY"]
@@ -24,7 +25,8 @@ client = tweepy.Client(
 # --- Countdown Configuration ---
 release_date = datetime.date(2026, 1, 9)
 countdown_start_date = datetime.date(2025, 9, 29)
-today = datetime.date.today()
+today = datetime.datetime.now(tz=ZoneInfo("Asia/Kolkata")).date()
+
 
 # --- Main Script Logic ---
 if today < countdown_start_date:
