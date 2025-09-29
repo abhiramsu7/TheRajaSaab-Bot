@@ -5,7 +5,7 @@ name: Rajasaab Countdown Tweet
 on:
   schedule:
     # Runs at 18:30 UTC, which is 12:00 AM IST.
-    - cron: '05 11 * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch: # Allows you to run it manually for testing
 
 jobs:
