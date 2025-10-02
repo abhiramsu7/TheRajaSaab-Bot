@@ -2,7 +2,7 @@ name: Daily Tweet
 
 on:
   schedule:
-    - cron: "50 18 * * *"   # Runs at 12:20 AM IST (18:50 UTC)
+    - cron: "30 18 * * *"   # Runs at 12:00 AM IST (18:30 UTC)
   workflow_dispatch:        # Allow manual run if needed
 
 jobs:
@@ -21,11 +21,11 @@ jobs:
       - name: Install dependencies
         run: pip install tweepy
 
-      - name: Run bot (with duplicate check)
+      - name: Run bot
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET_KEY: ${{ secrets.TWITTER_API_SECRET_KEY }}
           TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
         run: |
-          python check_and_tweet.py
+          python run_bot.py

@@ -3,6 +3,11 @@ import datetime
 import os
 import time
 from zoneinfo import ZoneInfo
+from dotenv import load_dotenv
+
+load_dotenv()
+print("Debug: API key from env =", os.getenv("TWITTER_API_KEY"))
+
 
 # --- Load Twitter credentials from env vars ---
 try:
