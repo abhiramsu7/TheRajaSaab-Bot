@@ -1,8 +1,8 @@
 name: Daily Tweet
 
 on:
-  schedule:
-    - cron: "30 18 * * *"   # Runs at 12:00 AM IST (18:30 UTC)
+  # schedule:
+  #   - cron: "30 18 * * *"   # Runs at 12:00 AM IST (18:30 UTC)
   workflow_dispatch:        # Allow manual run if needed
 
 jobs:
