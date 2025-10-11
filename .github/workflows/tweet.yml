@@ -1,5 +1,6 @@
 name: Raja Saab
 on:
+  workflow_dispatch:
   schedule:
     - cron: '27 18 * * *'
 jobs:
